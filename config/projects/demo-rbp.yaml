@@ -1,0 +1,82 @@
+project:
+  name: Demo-RBP
+  baseUrl: http://localhost:4000
+  environment: local
+
+authentication:
+  login:
+    endpoint: /login
+    method: POST
+    authType: TOKEN
+    responseTokenPath: token
+    tokenHeaderName: Authorization
+    tokenHeaderPrefix: "Bearer "
+  users:
+    employee:
+      role: employee
+      emailEnv: USER1_EMAIL
+      passwordEnv: USER1_PASSWORD
+    manager:
+      role: manager
+      emailEnv: USER2_EMAIL
+      passwordEnv: USER2_PASSWORD
+
+apis:
+  employee:
+    method: GET
+    endpoint: /employee/getEmployee
+    entityName: Employee
+  manager:
+    method: GET
+    endpoint: /manager/getEmployee
+    entityName: Employee
+
+records:
+  employee:
+    expected:
+      - "101"
+  manager:
+    expected:
+      - "102"
+
+responseMapping:
+  recordPath: data
+  recordIdField: id
+
+roles:
+  employee:
+    pathSegment: employee
+  manager:
+    pathSegment: manager
+
+rbpRules:
+  - name: Employee can access employee records
+    sessionRole: employee
+    apiRole: employee
+    access: ALLOW
+    expectedRecords:
+      - "101"
+
+  - name: Manager can access manager records
+    sessionRole: manager
+    apiRole: manager
+    access: ALLOW
+    expectedRecords:
+      - "102"
+
+  - name: Employee cannot access manager records (Forbidden 102 Check)
+    sessionRole: employee
+    apiRole: manager
+    access: DENY
+    policy: FORBIDDEN_RECORDS
+    forbiddenRecords:
+      - "102"
+    testAlternateUrl: true
+
+retry:
+  maxRetries: 2
+  backoffMs: 500
+  retryableStatusCodes:
+    - 500
+    - 502
+    - 503

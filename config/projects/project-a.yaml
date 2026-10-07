@@ -1,0 +1,81 @@
+project:
+  name: Project-A
+  baseUrl: https://project-a.company.com
+  environment: staging
+
+authentication:
+  login:
+    endpoint: /api/v1/auth/login
+    method: POST
+    authType: TOKEN
+    responseTokenPath: data.accessToken
+    tokenHeaderName: Authorization
+    tokenHeaderPrefix: "Bearer "
+  users:
+    employee:
+      role: employee
+      emailEnv: USER1_EMAIL
+      passwordEnv: USER1_PASSWORD
+    manager:
+      role: manager
+      emailEnv: USER2_EMAIL
+      passwordEnv: USER2_PASSWORD
+
+apis:
+  employee:
+    method: GET
+    endpoint: /employee/getEmployee
+    entityName: Employee
+  manager:
+    method: GET
+    endpoint: /manager/getEmployee
+    entityName: Employee
+
+records:
+  employee:
+    expected:
+      - "101"
+  manager:
+    expected:
+      - "102"
+
+responseMapping:
+  recordPath: data
+  recordIdField: id
+
+roles:
+  employee:
+    pathSegment: employee
+  manager:
+    pathSegment: manager
+
+rbpRules:
+  - name: Employee can access employee records
+    sessionRole: employee
+    apiRole: employee
+    access: ALLOW
+    expectedRecords:
+      - "101"
+
+  - name: Manager can access manager records
+    sessionRole: manager
+    apiRole: manager
+    access: ALLOW
+    expectedRecords:
+      - "102"
+
+  - name: Employee cannot access manager records
+    sessionRole: employee
+    apiRole: manager
+    access: DENY
+    policy: FORBIDDEN_RECORDS
+    forbiddenRecords:
+      - "102"
+
+retry:
+  maxRetries: 2
+  backoffMs: 1000
+  retryableStatusCodes:
+    - 500
+    - 502
+    - 503

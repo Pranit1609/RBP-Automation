@@ -1,0 +1,49 @@
+{
+  "name": "rbp-api-automation-framework",
+  "version": "1.0.0",
+  "description": "Production-grade, configuration-driven Role-Based Permission (RBP) API Automation Framework",
+  "main": "dist/src/cli/index.js",
+  "scripts": {
+    "build": "tsc && npm run dashboard:build",
+    "test": "playwright test",
+    "test:unit": "playwright test tests/unit",
+    "test:e2e": "playwright test tests/e2e",
+    "rbp:test": "tsx src/cli/index.ts test",
+    "rbp:mock": "tsx src/mock/server.ts",
+    "rbp:dashboard": "tsx dashboard/backend/src/server.ts",
+    "rbp:report": "playwright show-report",
+    "dashboard:dev": "vite dashboard/frontend",
+    "dashboard:build": "vite build dashboard/frontend --outDir ../backend/dist-frontend",
+    "lint": "eslint src/ --ext .ts",
+    "format": "prettier --write \"src/**/*.ts\" \"tests/**/*.ts\""
+  },
+  "dependencies": {
+    "sql.js": "^1.12.0",
+    "commander": "^12.1.0",
+    "cors": "^2.8.5",
+    "dotenv": "^16.4.7",
+    "express": "^4.21.2",
+    "js-yaml": "^4.1.0",
+    "lucide-react": "^0.475.0",
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1",
+    "zod": "^3.24.2"
+  },
+  "devDependencies": {
+    "@playwright/test": "^1.50.1",
+    "@types/sql.js": "^1.4.9",
+    "@types/cors": "^2.8.17",
+    "@types/express": "^4.17.21",
+    "@types/js-yaml": "^4.0.9",
+    "@types/node": "^20.17.19",
+    "@types/react": "^18.3.18",
+    "@types/react-dom": "^18.3.5",
+    "@vitejs/plugin-react": "^4.3.4",
+    "allure-playwright": "^3.2.0",
+    "prettier": "^3.5.1",
+    "ts-node": "^10.9.2",
+    "tsx": "^4.19.3",
+    "typescript": "^5.7.3",
+    "vite": "^6.1.1"
+  }
+}

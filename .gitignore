@@ -1,0 +1,11 @@
+.env
+node_modules
+playwright-report
+test-results
+allure-results
+dist
+reports/*.sqlite
+reports/*.json
+reports/*.html
+reports/*.xml
+dashboard/backend/dist-frontend

@@ -1,0 +1,73 @@
+project:
+  name: Project-B
+  baseUrl: https://project-b.company.com
+  environment: production
+
+authentication:
+  login:
+    endpoint: /auth/session
+    method: POST
+    authType: TOKEN
+    responseTokenPath: token
+    tokenHeaderName: X-Auth-Token
+    tokenHeaderPrefix: ""
+  users:
+    employee:
+      role: employee
+      emailEnv: USER1_EMAIL
+      passwordEnv: USER1_PASSWORD
+    manager:
+      role: manager
+      emailEnv: USER2_EMAIL
+      passwordEnv: USER2_PASSWORD
+
+apis:
+  employee:
+    method: GET
+    endpoint: /employee/getEmployeeData
+    entityName: EmployeeData
+  manager:
+    method: GET
+    endpoint: /manager/getEmployeeData
+    entityName: EmployeeData
+
+records:
+  employee:
+    expected:
+      - "201"
+  manager:
+    expected:
+      - "202"
+
+responseMapping:
+  recordPath: employees
+  recordIdField: employeeId
+
+roles:
+  employee:
+    pathSegment: employee
+  manager:
+    pathSegment: manager
+
+rbpRules:
+  - name: Employee access own data
+    sessionRole: employee
+    apiRole: employee
+    access: ALLOW
+    expectedRecords:
+      - "201"
+
+  - name: Manager access own data
+    sessionRole: manager
+    apiRole: manager
+    access: ALLOW
+    expectedRecords:
+      - "202"
+
+  - name: Employee forbidden manager data
+    sessionRole: employee
+    apiRole: manager
+    access: DENY
+    policy: FORBIDDEN_RECORDS
+    forbiddenRecords:
+      - "202"
